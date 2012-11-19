@@ -2,14 +2,6 @@
   (:use [lucre.data]
         [midje.sweet]))
 
-;(def testfile "test/data/2012.Last.ntd")
-
-;(deftest ntd-file-test
-  ;(testing "Open NinjaTrader .ntd file"
-    ;(let [file (ntd-file testfile)]
-      ;(is (not (nil? file)))
-      ;(is (= {:sym "AAPL"} (first file))))))
-
 (def tl-testfile "test/data/tradelink/AAPL20070724.TIK")
 
 (fact "Open Tradelink .TIK file" 
