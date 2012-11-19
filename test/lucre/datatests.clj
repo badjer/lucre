@@ -9,6 +9,7 @@
         header (:header data) 
         ticks (:ticks data)] 
     data => truthy
+    header => truthy
     (:symbol header) => "AAPL"
     (> (count ticks) 0) => true
     (:trade (first ticks)) => 138.88M
