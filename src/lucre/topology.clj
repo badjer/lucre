@@ -23,19 +23,19 @@
       res)))
 
 
-(storm/defbolt avg-bolt ["ma"] {:prepare true :params [size]}
+(storm/defbolt avg-bolt ["ma"] {:params [qsize] :prepare true}
   [conf context collector]
-  (let [prices (atom [])]
+  (let [prices (atom (clojure.lang.PersistentQueue/EMPTY))]
     (storm/bolt 
       (execute [tuple]
                (let [price (tuple "price")]
-                 ;(swap! prices enqueue size price)
+                 (swap! prices enqueue qsize price)
                  (storm/emit-bolt! collector [(ma @prices)] :anchor tuple)
                  (storm/ack! collector tuple))))))
 
 
-(defn ma-topology [] 
+(defn ma-topology [masize] 
   (storm/topology
     {"ticks" (storm/spout-spec tick-spout)}
-    {"avg" (storm/bolt-spec {"ticks" :shuffle}
-                            avg-bolt)}))
+    {"ma" (storm/bolt-spec {"ticks" :shuffle}
+                            (avg-bolt masize))}))
