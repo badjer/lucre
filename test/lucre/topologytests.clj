@@ -6,6 +6,7 @@
 
 (facts "ma works"
   (ma []) => nil
+  (ma [11M]) => 11M
   (ma [11M 13M]) => 12M)
   
 
@@ -18,6 +19,6 @@
                                         :mock-sources
                                         {"ticks" [[123M]
                                                   [125M]]})]
-    (facts
+    (facts "ma-topology computes moving average"
       output => truthy
       (storm/read-tuples output "avg") => [[123M] [124M]])))
