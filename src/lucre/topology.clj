@@ -16,13 +16,20 @@
     nil
     (/ (apply + prices) (count prices))))
 
-(storm/defbolt avg-bolt ["ma"] {:prepare true}
+(defn enqueue [q qsize item]
+  (let [res (conj q item)]
+    (if (> (count res) qsize)
+      (pop res)
+      res)))
+
+
+(storm/defbolt avg-bolt ["ma"] {:prepare true :params [size]}
   [conf context collector]
   (let [prices (atom [])]
     (storm/bolt 
       (execute [tuple]
                (let [price (tuple "price")]
-                 (swap! prices conj price)
+                 ;(swap! prices enqueue size price)
                  (storm/emit-bolt! collector [(ma @prices)] :anchor tuple)
                  (storm/ack! collector tuple))))))
 
